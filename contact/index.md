@@ -9,7 +9,7 @@
 
 
 <div class="contact">
-  <form action="https://formspree.io/meng.luo@majorbio.com" method="POST" enctype="multipart/form-data" name="EmailForm">
+  <form action="https://formspree.io/f/xpzoopyy" method="POST" enctype="multipart/form-data" name="EmailForm">
     <p>
       <label>Name *</label>
       <input type="text" name="Name" required>
