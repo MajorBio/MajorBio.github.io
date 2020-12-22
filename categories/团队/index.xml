@@ -1,0 +1,14 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>团队 - 分类 - 美吉生物信息实验室</title>
+        <link>http://mojorbioinfor.work/categories/%E5%9B%A2%E9%98%9F/</link>
+        <description>团队 - 分类 - 美吉生物信息实验室</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Sat, 19 Dec 2020 16:29:59 &#43;0800</lastBuildDate><atom:link href="http://mojorbioinfor.work/categories/%E5%9B%A2%E9%98%9F/" rel="self" type="application/rss+xml" /><item>
+    <title>动植物组学生物信息团队</title>
+    <link>http://mojorbioinfor.work/team/</link>
+    <pubDate>Sat, 19 Dec 2020 16:29:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://mojorbioinfor.work/team/</guid>
+    <description><![CDATA[Meet the Team In Majorbio Meng Luo Supervisor/Tech Lead Daokuan Zhang Bioinformatics Engineer Xiaolong He Bioinformatics Engineer Dongmei Fu Bioinformatics Engineer Chunxiang Xue Bioinformatics Engineer Jiameng Li Bioinformatics Engineer]]></description>
+</item></channel>
+</rss>

@@ -1,0 +1,14 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>定位 - 标签 - 美吉生物信息实验室</title>
+        <link>http://mojorbioinfor.work/tags/%E5%AE%9A%E4%BD%8D/</link>
+        <description>定位 - 标签 - 美吉生物信息实验室</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 14 Dec 2020 16:29:59 &#43;0800</lastBuildDate><atom:link href="http://mojorbioinfor.work/tags/%E5%AE%9A%E4%BD%8D/" rel="self" type="application/rss+xml" /><item>
+    <title>TWAS/eQTL analysis pipeline</title>
+    <link>http://mojorbioinfor.work/posts/matrix-eqtl-twas/</link>
+    <pubDate>Mon, 14 Dec 2020 16:29:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://mojorbioinfor.work/posts/matrix-eqtl-twas/</guid>
+    <description><![CDATA[eQTL 数据准备 物种的gff文件 vcf文件（已做完基因型填充） 1 $java -jar /mnt/ilustre/centos7users/xiaolong.he/bin/beagle/beagle.18May20.d20.jar gt=/mnt/ilustre/centos7users/xiaolong.he/others/GWAS_mengluo/KF/pop.uniq.vcf out=/mnt/ilustre/centos7users/xiaolong.he/others/GWAS_mengluo/KF/pop.phased&gt; 基因表达量矩阵（行为基因，列为样本） Pipeline 示例： 1 2 3 4 5 6 7 8 9 10 11 12 13 14]]></description>
+</item></channel>
+</rss>

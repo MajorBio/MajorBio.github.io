@@ -1,0 +1,14 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>STEM - 标签 - 美吉生物信息实验室</title>
+        <link>http://mojorbioinfor.work/tags/stem/</link>
+        <description>STEM - 标签 - 美吉生物信息实验室</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 14 Dec 2020 16:29:59 &#43;0800</lastBuildDate><atom:link href="http://mojorbioinfor.work/tags/stem/" rel="self" type="application/rss+xml" /><item>
+    <title>The Short Time-series Expression Miner</title>
+    <link>http://mojorbioinfor.work/posts/stem-sop/</link>
+    <pubDate>Mon, 14 Dec 2020 16:29:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://mojorbioinfor.work/posts/stem-sop/</guid>
+    <description><![CDATA[STEM: a tool for the analysis of short time series gene expression data STEM官方帮助文档 一. 数据准备 RNseq 表达矩阵文件:行为基因，列为样本 二. Pipeline 1 2 3 4 5 脚本位置： /mnt/ilustre/centos7users/daokuan.zhang/workspace/develop/STEM/STEM.py 用法示例： python /mnt/ilustre/centos7users/daokuan.zhang/workspace/develop/STEM/STEM.py matrix.txt 三.]]></description>
+</item></channel>
+</rss>

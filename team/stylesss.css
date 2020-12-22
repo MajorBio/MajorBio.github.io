@@ -1,0 +1,118 @@
+section{
+  display:block
+}
+.designation{
+  text-align: center;
+}
+
+h2 {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 8px;
+  padding-right: 0%;
+  background: #1e9dd8;
+  border-left: 18px solid rgb(94, 209, 123);
+  color: rgb(0, 0, 0);
+  margin: 24px 0;
+  height: 50%;
+  width: 100%;
+  text-align: center;
+}
+
+h3 {
+  font-size: 32px;
+  font-weight: bold;
+  padding: 8px;
+  padding-right: 0%;
+  background: #1e9dd8;
+  border-left: 18px solid rgb(94, 209, 123);
+  color: rgb(0, 0, 0);
+  margin: 24px 0;
+  height: 100%;
+  width: 90%;
+}
+
+.person-container {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.person {
+  width: 300px;
+  height: 300px;
+  position: relative;
+  perspective: 400px;
+}
+
+.person img {
+  max-width: 100%;
+}
+
+.person .front {
+  border-radius: 50%;
+  height: 100%;
+  overflow: hidden;
+  backface-visibility: hidden;
+
+  transition: all 0.8s;
+}
+
+.person .back {
+  position: absolute;
+  top: 0;
+  height: 300px;
+  width: 300px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 0 50px 2px rgba(0, 0, 0, 0.1);
+
+  transform: rotateY(-180deg);
+  backface-visibility: hidden;
+  transition: 0.8s;
+}
+
+.person:hover .front {
+  transform: rotateY(180deg);
+}
+
+.person:hover .back {
+  transform: rotateY(0deg);
+}
+
+.social img {
+  margin: 8px;
+  height: 24px;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+}
+
+/* Create two equal columns that sits next to each other */
+.column {
+  flex: 50%;
+  padding: 10px;
+  /*height: 300px; /* Should be removed. Only for demonstration */
+}
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  height: 200px;
+  width: 200px;
+}
+

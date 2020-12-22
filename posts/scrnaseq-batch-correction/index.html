@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <title>不同scRNAseq批次效应矫正方法计算比较 - 美吉生物信息实验室</title><meta name="Description" content="不同scRNAseq批次效应矫正方法"><meta property="og:title" content="不同scRNAseq批次效应矫正方法计算比较" />
+<meta property="og:description" content="不同scRNAseq批次效应矫正方法" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/" />
+<meta property="og:image" content="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/batch.png"/>
+<meta property="article:published_time" content="2020-12-14T16:29:59+08:00" />
+<meta property="article:modified_time" content="2020-12-15T16:29:59+08:00" />
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/batch.png"/>
+<meta name="twitter:title" content="不同scRNAseq批次效应矫正方法计算比较"/>
+<meta name="twitter:description" content="不同scRNAseq批次效应矫正方法"/>
+<meta name="application-name" content="美吉生物信息团队">
+<meta name="apple-mobile-web-app-title" content="美吉生物信息团队"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="/images/MBIL.svg"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/" /><link rel="prev" href="http://mojorbioinfor.work/posts/mapping-make-fake-data/" /><link rel="next" href="http://mojorbioinfor.work/posts/probabilistic-estimation-of-expression-residuals/" /><link rel="stylesheet" href="/lib/normalize/normalize.min.css"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"><link rel="stylesheet" href="/lib/animate/animate.min.css"><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "不同scRNAseq批次效应矫正方法计算比较",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/mojorbioinfor.work\/posts\/scrnaseq-batch-correction\/"
+        },"image": [{
+                            "@type": "ImageObject",
+                            "url": "http:\/\/mojorbioinfor.work\/posts\/scrnaseq-batch-correction\/batch.png",
+                            "width":  1198 ,
+                            "height":  621 
+                        }],"genre": "posts","keywords": "批次效应, scRNAseq, RNAseq, 单细胞","wordcount":  930 ,
+        "url": "http:\/\/mojorbioinfor.work\/posts\/scrnaseq-batch-correction\/","datePublished": "2020-12-14T16:29:59+08:00","dateModified": "2020-12-15T16:29:59+08:00","publisher": {
+            "@type": "Organization",
+            "name": "美吉生物信息团队"},"author": {
+                "@type": "Person",
+                "name": "Xiaolong He"
+            },"description": "不同scRNAseq批次效应矫正方法"
+    }
+    </script></head>
+    <body header-desktop="" header-mobile=""><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : '' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="美吉生物信息实验室"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/MBIL.svg"
+        data-srcset="/images/MBIL.svg, /images/MBIL.svg 1.5x, /images/MBIL.svg 2x"
+        data-sizes="auto"
+        alt="/images/MBIL.svg"
+        title="/images/MBIL.svg" /></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts/" title="生物信息流程"> 生物信息流程 </a><a class="menu-item" href="/tags/" title="标签"> 标签 </a><a class="menu-item" href="/categories/" title="分类"> 分类 </a><a class="menu-item" href="/publication/" title="文章"> 文章 </a><a class="menu-item" href="/team/" title="团队"> 团队 </a><a class="menu-item" href="/joinus/" title="加入我们"> 加入我们 </a><a class="menu-item" href="https://github.com/MajorBio" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i>  </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="美吉生物信息实验室"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/images/MBIL.svg"
+        data-srcset="/images/MBIL.svg, /images/MBIL.svg 1.5x, /images/MBIL.svg 2x"
+        data-sizes="auto"
+        alt="/images/MBIL.svg"
+        title="/images/MBIL.svg" /></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/posts/" title="生物信息流程">生物信息流程</a><a class="menu-item" href="/tags/" title="标签">标签</a><a class="menu-item" href="/categories/" title="分类">分类</a><a class="menu-item" href="/publication/" title="文章">文章</a><a class="menu-item" href="/team/" title="团队">团队</a><a class="menu-item" href="/joinus/" title="加入我们">加入我们</a><a class="menu-item" href="https://github.com/MajorBio" title="GitHub" rel="noopener noreffer" target="_blank"><i class='fab fa-github fa-fw'></i></a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw"></i>
+            </a></div>
+    </div>
+</header>
+<div class="search-dropdown desktop">
+    <div id="search-dropdown-desktop"></div>
+</div>
+<div class="search-dropdown mobile">
+    <div id="search-dropdown-mobile"></div>
+</div>
+<main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animated flipInX">不同scRNAseq批次效应矫正方法计算比较</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://github.com/xiaolong-he999" title="Author" target="_blank" rel="noopener noreffer author" class="author"><i class="fas fa-user-circle fa-fw"></i>Xiaolong He</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/tools/"><i class="far fa-folder fa-fw"></i>tools</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw"></i>&nbsp;<time datetime="2020-12-14">2020-12-14</time>&nbsp;<i class="fas fa-pencil-alt fa-fw"></i>&nbsp;约 930 字&nbsp;
+                <i class="far fa-clock fa-fw"></i>&nbsp;预计阅读 2 分钟&nbsp;<span id="/posts/scrnaseq-batch-correction/" class="leancloud_visitors" data-flag-title="不同scRNAseq批次效应矫正方法计算比较">
+                        <i class="far fa-eye fa-fw"></i>&nbsp;<span class=leancloud-visitors-count></span>&nbsp;次阅读
+                    </span>&nbsp;</div>
+        </div><div class="featured-image"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/scrnaseq-batch-correction/batch.png"
+        data-srcset="/posts/scrnaseq-batch-correction/batch.png, /posts/scrnaseq-batch-correction/batch.png 1.5x, /posts/scrnaseq-batch-correction/batch.png 2x"
+        data-sizes="auto"
+        alt="/posts/scrnaseq-batch-correction/batch.png"
+        title="不同scRNAseq批次效应矫正方法" /></div><div class="details toc" id="toc-static"  kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#limma">limma</a></li>
+    <li><a href="#harmony">harmony</a></li>
+    <li><a href="#liger">LIGER</a></li>
+    <li><a href="#mnn-correct">MNN Correct</a></li>
+    <li><a href="#fastmnn">fastMNN</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="batch-methds">Batch methds</h1>
+<p>所用数据:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-fallback" data-lang="fallback">/mnt/ilustre/centos7users/xiaolong.he/project/scRNA/new_pipe/04.Step4.combain/Merged.Seurat.rds
+</code></pre></td></tr></table>
+</div>
+</div><h2 id="limma">limma</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-r" data-lang="r"><span class="c1">#!/usr/bin/env Rscript3.6.1</span>
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;getopt&#34;</span><span class="p">))</span>
+<span class="nf">options</span><span class="p">(</span><span class="n">bitmapType</span><span class="o">=</span><span class="s">&#39;cairo&#39;</span><span class="p">)</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="nf">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+    <span class="s">&#39;rds&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+    <span class="s">&#39;outdir&#39;</span><span class="p">,</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+    <span class="s">&#39;help&#39;</span><span class="p">,</span><span class="s">&#39;h&#39;</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="s">&#39;logical&#39;</span>
+    <span class="p">),</span> <span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="m">4</span><span class="p">);</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">);</span>
+<span class="n">print_usage</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">spec</span><span class="o">=</span><span class="kc">NULL</span><span class="p">){</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">));</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example: \n&#34;</span><span class="p">);</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example:
+</span><span class="s">    Rscript limma.r --i  --o
+</span><span class="s">    Usage:
+</span><span class="s">    --rds       input file rds
+</span><span class="s">    --outdir    outdir
+</span><span class="s">    --help              usage\n&#34;</span>
+    <span class="p">);</span>
+  <span class="nf">q</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="m">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nf">if </span><span class="p">(</span> <span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">help</span><span class="p">))</span> <span class="p">{</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rds</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+
+
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;Seurat&#34;</span><span class="p">))</span>
+
+<span class="n">scRNA</span> <span class="o">&lt;-</span> <span class="nf">readRDS</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rds</span><span class="p">)</span>
+<span class="n">count</span> <span class="o">&lt;-</span> <span class="nf">as.matrix</span><span class="p">(</span><span class="n">scRNA</span><span class="o">@</span><span class="n">assays</span><span class="o">$</span><span class="n">RNA</span><span class="o">@</span><span class="n">counts</span><span class="p">)</span>
+<span class="n">count</span> <span class="o">&lt;-</span> <span class="nf">log</span><span class="p">(</span><span class="n">count</span><span class="m">+1</span><span class="p">)</span>
+<span class="n">batchs</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="nf">rep</span><span class="p">(</span><span class="s">&#39;1&#39;</span><span class="p">,</span><span class="m">7205</span><span class="p">),</span><span class="nf">rep</span><span class="p">(</span><span class="s">&#39;2&#39;</span><span class="p">,</span><span class="m">9104</span><span class="p">))</span>
+<span class="n">lim_batch</span> <span class="o">&lt;-</span> <span class="n">limma</span><span class="o">::</span><span class="nf">removeBatchEffect</span><span class="p">(</span><span class="n">count</span><span class="p">,</span><span class="n">batch</span><span class="o">=</span><span class="n">batchs</span><span class="p">)</span>
+<span class="nf">write.table</span><span class="p">(</span><span class="n">lim_batch</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#34;limma.txt&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">),</span><span class="n">col.names</span><span class="o">=</span><span class="bp">T</span><span class="p">,</span><span class="n">row.names</span><span class="o">=</span><span class="bp">T</span><span class="p">,</span><span class="n">quote</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+<span class="nf">save.image</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#34;limma.RData&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">))</span>
+<span class="nf">proc.time</span><span class="p">()</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>limma去批次后矩阵含有大量负值，针对大量负值无法进行差异表达基因计算。
+可通过对负值赋值为0后计算。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="liger_DE_num.png"
+        data-srcset="/posts/scrnaseq-batch-correction/liger_DE_num.png, liger_DE_num.png 1.5x, /posts/scrnaseq-batch-correction/liger_DE_num.png 2x"
+        data-sizes="auto"
+        alt="/posts/scrnaseq-batch-correction/liger_DE_num.png"
+        title="liger_DE_num.png" />
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="limma_DE.png"
+        data-srcset="/posts/scrnaseq-batch-correction/limma_DE.png, limma_DE.png 1.5x, /posts/scrnaseq-batch-correction/limma_DE.png 2x"
+        data-sizes="auto"
+        alt="/posts/scrnaseq-batch-correction/limma_DE.png"
+        title="limma_DE.png" /></p>
+<p>参考文献：Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W and Smyth GK (2015). <a href="https://academic.oup.com/nar/article/43/7/e47/2414268" target="_blank" rel="noopener noreffer">limma powers differential expression analyses for RNA-sequencing and microarray studies</a>. Nucleic Acids Research, 43, pp. doi: 10.1093/nar/gkv007</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="limma.jpg"
+        data-srcset="/posts/scrnaseq-batch-correction/limma.jpg, limma.jpg 1.5x, /posts/scrnaseq-batch-correction/limma.jpg 2x"
+        data-sizes="auto"
+        alt="/posts/scrnaseq-batch-correction/limma.jpg"
+        title="limma.jpg" /></p>
+<h2 id="harmony">harmony</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-r" data-lang="r"><span class="c1">#!/usr/bin/env Rscript3.6.1</span>
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;getopt&#34;</span><span class="p">))</span>
+<span class="nf">options</span><span class="p">(</span><span class="n">bitmapType</span><span class="o">=</span><span class="s">&#39;cairo&#39;</span><span class="p">)</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="nf">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+    <span class="s">&#39;rds&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+    <span class="s">&#39;outdir&#39;</span><span class="p">,</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+    <span class="s">&#39;help&#39;</span><span class="p">,</span><span class="s">&#39;h&#39;</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="s">&#39;logical&#39;</span>
+    <span class="p">),</span> <span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="m">4</span><span class="p">);</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">);</span>
+<span class="n">print_usage</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">spec</span><span class="o">=</span><span class="kc">NULL</span><span class="p">){</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">));</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example: \n&#34;</span><span class="p">);</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example:
+</span><span class="s">    Rscript harmony.r --i  --o
+</span><span class="s">    Usage:
+</span><span class="s">    --rds       input file rds
+</span><span class="s">    --outdir    outdir
+</span><span class="s">    --help              usage\n&#34;</span>
+    <span class="p">);</span>
+  <span class="nf">q</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="m">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nf">if </span><span class="p">(</span> <span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">help</span><span class="p">))</span> <span class="p">{</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rds</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;harmony&#34;</span><span class="p">),</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;magrittr&#34;</span><span class="p">),</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;Seurat&#34;</span><span class="p">),</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;dplyr&#34;</span><span class="p">)))</span>
+<span class="n">scRNA</span> <span class="o">&lt;-</span> <span class="nf">readRDS</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rds</span><span class="p">)</span>
+<span class="c1"># Normalize/find features</span>
+<span class="n">scRNA</span> <span class="o">&lt;-</span> <span class="nf">NormalizeData</span><span class="p">(</span><span class="n">scRNA</span><span class="p">)</span>
+<span class="n">scRNA</span> <span class="o">&lt;-</span> <span class="nf">FindVariableFeatures</span><span class="p">(</span><span class="n">scRNA</span><span class="p">,</span> <span class="n">selection.method</span> <span class="o">=</span> <span class="s">&#34;vst&#34;</span><span class="p">,</span> <span class="n">nfeatures</span> <span class="o">=</span> <span class="m">2000</span><span class="p">)</span>
+<span class="n">scRNA</span> <span class="o">&lt;-</span> <span class="nf">ScaleData</span><span class="p">(</span><span class="n">scRNA</span><span class="p">,</span><span class="n">vars.to.regress</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&#34;nUMI&#34;</span><span class="p">,</span> <span class="s">&#34;percent.mito&#34;</span><span class="p">,</span><span class="s">&#34;percent.ribo&#34;</span><span class="p">,</span><span class="s">&#34;sample&#34;</span><span class="p">))</span>
+<span class="n">scRNA</span> <span class="o">&lt;-</span> <span class="nf">RunPCA</span><span class="p">(</span><span class="n">scRNA</span><span class="p">,</span> <span class="n">features</span> <span class="o">=</span> <span class="nf">VariableFeatures</span><span class="p">(</span><span class="n">object</span> <span class="o">=</span> <span class="n">scRNA</span><span class="p">),</span><span class="n">verbose</span> <span class="o">=</span> <span class="bp">F</span><span class="p">)</span>
+<span class="c1"># batch</span>
+<span class="n">scRNA</span> <span class="o">&lt;-</span> <span class="n">scRNA</span> <span class="o">%&gt;%</span> <span class="nf">RunHarmony</span><span class="p">(</span><span class="s">&#34;orig.ident&#34;</span><span class="p">,</span> <span class="n">plot_convergence</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#34;harmony.RData&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="harmony_batch.jpg"
+        data-srcset="/posts/scrnaseq-batch-correction/harmony_batch.jpg, harmony_batch.jpg 1.5x, /posts/scrnaseq-batch-correction/harmony_batch.jpg 2x"
+        data-sizes="auto"
+        alt="/posts/scrnaseq-batch-correction/harmony_batch.jpg"
+        title="harmony_batch.jpg" /></p>
+<p>参考文献：Korsunsky I, Millard N, Fan J, et al. <a href="https://www.nature.com/articles/s41592-019-0619-0" target="_blank" rel="noopener noreffer">Fast, sensitive and accurate integration of single-cell data with Harmony</a>. Nature methods, 2019: 1-8.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="harmony.jpg"
+        data-srcset="/posts/scrnaseq-batch-correction/harmony.jpg, harmony.jpg 1.5x, /posts/scrnaseq-batch-correction/harmony.jpg 2x"
+        data-sizes="auto"
+        alt="/posts/scrnaseq-batch-correction/harmony.jpg"
+        title="harmony.jpg" /></p>
+<h2 id="liger">LIGER</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-r" data-lang="r"><span class="c1">#!/usr/bin/env Rscript3.6.1</span>
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;getopt&#34;</span><span class="p">))</span>
+<span class="nf">options</span><span class="p">(</span><span class="n">bitmapType</span><span class="o">=</span><span class="s">&#39;cairo&#39;</span><span class="p">)</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="nf">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+    <span class="s">&#39;rds&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+    <span class="s">&#39;outdir&#39;</span><span class="p">,</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+    <span class="s">&#39;help&#39;</span><span class="p">,</span><span class="s">&#39;h&#39;</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="s">&#39;logical&#39;</span>
+    <span class="p">),</span> <span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="m">4</span><span class="p">);</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">);</span>
+<span class="n">print_usage</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">spec</span><span class="o">=</span><span class="kc">NULL</span><span class="p">){</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">));</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example: \n&#34;</span><span class="p">);</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example:
+</span><span class="s">    Rscript liger.r --i  --o
+</span><span class="s">    Usage:
+</span><span class="s">    --rds	input file rds
+</span><span class="s">    --outdir	outdir
+</span><span class="s">    --help		usage\n&#34;</span>
+    <span class="p">);</span>
+  <span class="nf">q</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="m">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nf">if </span><span class="p">(</span> <span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">help</span><span class="p">))</span> <span class="p">{</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rds</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;liger&#34;</span><span class="p">),</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;Seurat&#34;</span><span class="p">)))</span>
+
+<span class="n">scRNA</span> <span class="o">&lt;-</span> <span class="nf">readRDS</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rds</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">&lt;-</span> <span class="n">scRNA</span><span class="o">@</span><span class="n">assays</span><span class="o">$</span><span class="n">RNA</span><span class="o">@</span><span class="n">counts[</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">7205</span><span class="n">]</span>
+<span class="n">x4</span> <span class="o">&lt;-</span> <span class="n">scRNA</span><span class="o">@</span><span class="n">assays</span><span class="o">$</span><span class="n">RNA</span><span class="o">@</span><span class="n">counts[</span><span class="p">,</span><span class="m">7206</span><span class="o">:</span><span class="m">16309</span><span class="n">]</span>
+<span class="n">ifnb_liger</span> <span class="o">&lt;-</span> <span class="nf">createLiger</span><span class="p">(</span><span class="nf">list</span><span class="p">(</span><span class="n">x2</span> <span class="o">=</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x4</span> <span class="o">=</span> <span class="n">x4</span><span class="p">))</span>
+<span class="n">ifnb_liger</span> <span class="o">&lt;-</span> <span class="nf">normalize</span><span class="p">(</span><span class="n">ifnb_liger</span><span class="p">)</span>
+<span class="n">ifnb_liger</span> <span class="o">&lt;-</span> <span class="nf">selectGenes</span><span class="p">(</span><span class="n">ifnb_liger</span><span class="p">)</span>
+<span class="n">ifnb_liger</span> <span class="o">&lt;-</span> <span class="nf">scaleNotCenter</span><span class="p">(</span><span class="n">ifnb_liger</span><span class="p">)</span>
+<span class="n">ifnb_liger</span> <span class="o">&lt;-</span> <span class="nf">optimizeALS</span><span class="p">(</span><span class="n">ifnb_liger</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="m">20</span><span class="p">)</span>
+<span class="n">ifnb_liger</span> <span class="o">&lt;-</span> <span class="nf">quantile_norm</span><span class="p">(</span><span class="n">ifnb_liger</span><span class="p">)</span>
+<span class="nf">save.image</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#34;LIGER_result.RData&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">))</span>
+<span class="nf">proc.time</span><span class="p">()</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>使用liger去批次后所得矩阵，计算差异表达基因。由于liger去批次后数据矩阵结果0值过多，会导致计算差异表达时数据被删除的问题。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="liger_DE.jpg"
+        data-srcset="/posts/scrnaseq-batch-correction/liger_DE.jpg, liger_DE.jpg 1.5x, /posts/scrnaseq-batch-correction/liger_DE.jpg 2x"
+        data-sizes="auto"
+        alt="/posts/scrnaseq-batch-correction/liger_DE.jpg"
+        title="liger_DE.jpg" /></p>
+<p>参考文献：Welch J, Kozareva V, Ferreira A, et al. Integrative inference of brain cell similarities and differences from single-cell genomics[J]. bioRxiv, 2018: 459891.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="LIGER.jpg"
+        data-srcset="/posts/scrnaseq-batch-correction/LIGER.jpg, LIGER.jpg 1.5x, /posts/scrnaseq-batch-correction/LIGER.jpg 2x"
+        data-sizes="auto"
+        alt="/posts/scrnaseq-batch-correction/LIGER.jpg"
+        title="LIGER.jpg" /></p>
+<h2 id="mnn-correct">MNN Correct</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-r" data-lang="r"><span class="c1">#!/usr/bin/env Rscript3.6.1</span>
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;getopt&#34;</span><span class="p">))</span>
+<span class="nf">options</span><span class="p">(</span><span class="n">bitmapType</span><span class="o">=</span><span class="s">&#39;cairo&#39;</span><span class="p">)</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="nf">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+    <span class="s">&#39;rds&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+    <span class="s">&#39;outdir&#39;</span><span class="p">,</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+    <span class="s">&#39;help&#39;</span><span class="p">,</span><span class="s">&#39;h&#39;</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="s">&#39;logical&#39;</span>
+    <span class="p">),</span> <span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="m">4</span><span class="p">);</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">);</span>
+<span class="n">print_usage</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">spec</span><span class="o">=</span><span class="kc">NULL</span><span class="p">){</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">));</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example: \n&#34;</span><span class="p">);</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example:
+</span><span class="s">    Rscript mnncorrect.r --i  --o
+</span><span class="s">    Usage:
+</span><span class="s">    --rds       input file rds
+</span><span class="s">    --outdir    outdir
+</span><span class="s">    --help              usage\n&#34;</span>
+    <span class="p">);</span>
+  <span class="nf">q</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="m">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nf">if </span><span class="p">(</span> <span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">help</span><span class="p">))</span> <span class="p">{</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rds</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+
+
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;Seurat&#34;</span><span class="p">),</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;batchelor&#34;</span><span class="p">)))</span>
+
+<span class="n">scRNA</span> <span class="o">&lt;-</span> <span class="nf">readRDS</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rds</span><span class="p">)</span>
+<span class="n">test1</span> <span class="o">&lt;-</span> <span class="n">scRNA</span><span class="o">@</span><span class="n">assays</span><span class="o">$</span><span class="n">RNA</span><span class="o">@</span><span class="n">counts[</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">7205</span><span class="n">]</span>
+<span class="n">test2</span> <span class="o">&lt;-</span> <span class="n">scRNA</span><span class="o">@</span><span class="n">assays</span><span class="o">$</span><span class="n">RNA</span><span class="o">@</span><span class="n">counts[</span><span class="p">,</span><span class="m">7206</span><span class="o">:</span><span class="m">16309</span><span class="n">]</span>
+<span class="n">test1</span> <span class="o">&lt;-</span> <span class="nf">as.matrix</span><span class="p">(</span><span class="n">test1</span><span class="p">)</span>
+<span class="n">test2</span> <span class="o">&lt;-</span> <span class="nf">as.matrix</span><span class="p">(</span><span class="n">test2</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">&lt;-</span> <span class="nf">mnnCorrect</span><span class="p">(</span><span class="n">test1</span><span class="p">,</span><span class="n">test2</span><span class="p">)</span>
+<span class="nf">save.image</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#34;mnnCorrect.RData&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">))</span>
+<span class="nf">proc.time</span><span class="p">()</span>
+</code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="MNNCorrect_DE.jpg"
+        data-srcset="/posts/scrnaseq-batch-correction/MNNCorrect_DE.jpg, MNNCorrect_DE.jpg 1.5x, /posts/scrnaseq-batch-correction/MNNCorrect_DE.jpg 2x"
+        data-sizes="auto"
+        alt="/posts/scrnaseq-batch-correction/MNNCorrect_DE.jpg"
+        title="MNNCorrect_DE.jpg" /></p>
+<p>参考文献：Haghverdi L, Lun A T L, Morgan M D, et al. Batch effects in single-cell RNA-sequencing data are corrected by matching mutual nearest neighbors[J]. Nature biotechnology, 2018, 36(5): 421-427.</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="bacthelor.jpg"
+        data-srcset="/posts/scrnaseq-batch-correction/bacthelor.jpg, bacthelor.jpg 1.5x, /posts/scrnaseq-batch-correction/bacthelor.jpg 2x"
+        data-sizes="auto"
+        alt="/posts/scrnaseq-batch-correction/bacthelor.jpg"
+        title="MNNCorrect.jpg" /></p>
+<h2 id="fastmnn">fastMNN</h2>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-r" data-lang="r"><span class="c1">#!/usr/bin/env Rscript3.6.1</span>
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;getopt&#34;</span><span class="p">))</span>
+<span class="nf">options</span><span class="p">(</span><span class="n">bitmapType</span><span class="o">=</span><span class="s">&#39;cairo&#39;</span><span class="p">)</span>
+<span class="n">spec</span> <span class="o">=</span> <span class="nf">matrix</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+    <span class="s">&#39;rds&#39;</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+    <span class="s">&#39;outdir&#39;</span><span class="p">,</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="s">&#39;character&#39;</span><span class="p">,</span>
+    <span class="s">&#39;help&#39;</span><span class="p">,</span><span class="s">&#39;h&#39;</span><span class="p">,</span><span class="m">0</span><span class="p">,</span><span class="s">&#39;logical&#39;</span>
+    <span class="p">),</span> <span class="n">byrow</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="m">4</span><span class="p">);</span>
+<span class="n">opt</span> <span class="o">=</span> <span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">);</span>
+<span class="n">print_usage</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">spec</span><span class="o">=</span><span class="kc">NULL</span><span class="p">){</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="nf">getopt</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">));</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example: \n&#34;</span><span class="p">);</span>
+  <span class="nf">cat</span><span class="p">(</span><span class="s">&#34;Usage example:
+</span><span class="s">    Rscript fastmnn.r --i  --o
+</span><span class="s">    Usage:
+</span><span class="s">    --rds       input file rds
+</span><span class="s">    --outdir    outdir
+</span><span class="s">    --help              usage\n&#34;</span>
+    <span class="p">);</span>
+  <span class="nf">q</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="m">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nf">if </span><span class="p">(</span> <span class="o">!</span><span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">help</span><span class="p">))</span> <span class="p">{</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rds</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">)){</span><span class="nf">print_usage</span><span class="p">(</span><span class="n">spec</span><span class="p">)}</span>
+
+
+<span class="nf">suppressMessages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;Seurat&#34;</span><span class="p">),</span><span class="nf">library</span><span class="p">(</span><span class="s">&#34;batchelor&#34;</span><span class="p">)))</span>
+
+<span class="n">scRNA</span> <span class="o">&lt;-</span> <span class="nf">readRDS</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">rds</span><span class="p">)</span>
+<span class="n">test1</span> <span class="o">&lt;-</span> <span class="n">scRNA</span><span class="o">@</span><span class="n">assays</span><span class="o">$</span><span class="n">RNA</span><span class="o">@</span><span class="n">counts[</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">7205</span><span class="n">]</span>
+<span class="n">test2</span> <span class="o">&lt;-</span> <span class="n">scRNA</span><span class="o">@</span><span class="n">assays</span><span class="o">$</span><span class="n">RNA</span><span class="o">@</span><span class="n">counts[</span><span class="p">,</span><span class="m">7206</span><span class="o">:</span><span class="m">16309</span><span class="n">]</span>
+<span class="n">test1</span> <span class="o">&lt;-</span> <span class="nf">as.matrix</span><span class="p">(</span><span class="n">test1</span><span class="p">)</span>
+<span class="n">test2</span> <span class="o">&lt;-</span> <span class="nf">as.matrix</span><span class="p">(</span><span class="n">test2</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">&lt;-</span> <span class="nf">fastMNN</span><span class="p">(</span><span class="n">test1</span><span class="p">,</span><span class="n">test2</span><span class="p">)</span>
+<span class="nf">save.image</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="n">opt</span><span class="o">$</span><span class="n">outdir</span><span class="p">,</span><span class="s">&#34;mnnCorrect.RData&#34;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">&#34;&#34;</span><span class="p">))</span>
+<span class="nf">proc.time</span><span class="p">()</span>
+</code></pre></td></tr></table>
+</div>
+</div><h1 id="参考文献">参考文献</h1>
+<p>Haghverdi L, Lun A T L, Morgan M D, et al. <a href="https://www.nature.com/articles/nbt.4091" target="_blank" rel="noopener noreffer">Batch effects in single-cell RNA-sequencing data are corrected by matching mutual nearest neighbors</a>. Nature biotechnology, 2018, 36(5): 421-427.</p>
+<p>Tran, H.T.N., Ang, K.S., Chevrier, M. et al. <a href="https://doi.org/10.1186/s13059-019-1850-9" target="_blank" rel="noopener noreffer">A benchmark of batch-effect correction methods for single-cell RNA sequencing data</a>. Genome Biol 21, 12 (2020).</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2020-12-15</span>
+            </div>
+            <div class="post-info-license"></div>
+        </div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/posts/scrnaseq-batch-correction/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/" data-title="不同scRNAseq批次效应矫正方法计算比较" data-via="https://twitter.com/czheluo" data-hashtags="批次效应,scRNAseq,RNAseq,单细胞"><i class="fab fa-twitter fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/" data-hashtag="批次效应"><i class="fab fa-facebook-square fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Linkedin" data-sharer="linkedin" data-url="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/"><i class="fab fa-linkedin fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/" data-title="不同scRNAseq批次效应矫正方法计算比较"><i class="fab fa-hacker-news fa-fw"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/" data-title="不同scRNAseq批次效应矫正方法计算比较"><i data-svg-src="/lib/simple-icons/icons/line.min.svg"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/" data-title="不同scRNAseq批次效应矫正方法计算比较" data-ralateuid="https://weibo.com/2161302013/profile"><i class="fab fa-weibo fa-fw"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw"></i>&nbsp;<a href="/tags/%E6%89%B9%E6%AC%A1%E6%95%88%E5%BA%94/">批次效应</a>,&nbsp;<a href="/tags/scrnaseq/">scRNAseq</a>,&nbsp;<a href="/tags/rnaseq/">RNAseq</a>,&nbsp;<a href="/tags/%E5%8D%95%E7%BB%86%E8%83%9E/">单细胞</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/mapping-make-fake-data/" class="prev" rel="prev" title="根据比对率生产假的原始序列数据"><i class="fas fa-angle-left fa-fw"></i>根据比对率生产假的原始序列数据</a>
+            <a href="/posts/probabilistic-estimation-of-expression-residuals/" class="next" rel="next" title="Using probabilistic estimation of expression residuals (PEER) to obtain increased power and interpretability of gene expression analyses">Using probabilistic estimation of expression residuals (PEER) to obtain increased power and interpretability of gene expression analyses<i class="fas fa-angle-right fa-fw"></i></a></div>
+</div>
+<div id="comments"><div id="valine" class="comment"></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://valine.js.org/">Valine</a>.
+            </noscript><div id="fb-root" class="comment"></div>
+            <div
+                class="fb-comments"
+                data-href="http://mojorbioinfor.work/posts/scrnaseq-batch-correction/"
+                data-width="100%"
+                data-numposts="10"
+            ></div><noscript>
+                Please enable JavaScript to view the comments powered by <a href="https://developers.facebook.com/docs/plugins/comments/"></a>Facebook</a>.
+            </noscript></div></article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">MajorBioInformatics</div><div class="footer-line">Powered By <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.79.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.10"> LoveIt</a> 
+                    
+                </div>
+                <div class="footer-line"><i class="far fa-copyright fa-fw"></i><span itemprop="copyrightYear">2020</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank"></a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw"></i>
+            </a>
+        </div><link rel="stylesheet" href="/lib/valine/valine.min.css"><link rel="stylesheet" href="/lib/lightgallery/lightgallery.min.css"><link rel="stylesheet" href="/lib/katex/katex.min.css"><link rel="stylesheet" href="/lib/katex/copy-tex.min.css"><script type="text/javascript" src="/lib/valine/Valine.min.js"></script><script type="text/javascript" src="https://connect.facebook.net/zh_CN/sdk.js#xfbml=1&amp;version=v5.0&amp;appId=&amp;autoLogAppEvents=1" defer></script><script type="text/javascript" src="/lib/smooth-scroll/smooth-scroll.min.js"></script><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lightgallery.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-thumbnail.min.js"></script><script type="text/javascript" src="/lib/lightgallery/lg-zoom.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/katex/katex.min.js"></script><script type="text/javascript" src="/lib/katex/auto-render.min.js"></script><script type="text/javascript" src="/lib/katex/copy-tex.min.js"></script><script type="text/javascript" src="/lib/katex/mhchem.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":10},"comment":{"valine":{"appId":"Noyy9UKaXGwYBIUdvBTt7u76-gzGzoHsz","appKey":"15w6pTF8mFoxnm8muOFx5buM","avatar":"mp","el":"#valine","emojiCDN":"https://cdn.jsdelivr.net/npm/emoji-datasource-google@5.0.1/img/google/64/","emojiMaps":{"100":"1f4af.png","alien":"1f47d.png","anger":"1f4a2.png","angry":"1f620.png","anguished":"1f627.png","astonished":"1f632.png","black_heart":"1f5a4.png","blue_heart":"1f499.png","blush":"1f60a.png","bomb":"1f4a3.png","boom":"1f4a5.png","broken_heart":"1f494.png","brown_heart":"1f90e.png","clown_face":"1f921.png","cold_face":"1f976.png","cold_sweat":"1f630.png","confounded":"1f616.png","confused":"1f615.png","cry":"1f622.png","crying_cat_face":"1f63f.png","cupid":"1f498.png","dash":"1f4a8.png","disappointed":"1f61e.png","disappointed_relieved":"1f625.png","dizzy":"1f4ab.png","dizzy_face":"1f635.png","drooling_face":"1f924.png","exploding_head":"1f92f.png","expressionless":"1f611.png","face_vomiting":"1f92e.png","face_with_cowboy_hat":"1f920.png","face_with_hand_over_mouth":"1f92d.png","face_with_head_bandage":"1f915.png","face_with_monocle":"1f9d0.png","face_with_raised_eyebrow":"1f928.png","face_with_rolling_eyes":"1f644.png","face_with_symbols_on_mouth":"1f92c.png","face_with_thermometer":"1f912.png","fearful":"1f628.png","flushed":"1f633.png","frowning":"1f626.png","ghost":"1f47b.png","gift_heart":"1f49d.png","green_heart":"1f49a.png","grimacing":"1f62c.png","grin":"1f601.png","grinning":"1f600.png","hankey":"1f4a9.png","hear_no_evil":"1f649.png","heart":"2764-fe0f.png","heart_decoration":"1f49f.png","heart_eyes":"1f60d.png","heart_eyes_cat":"1f63b.png","heartbeat":"1f493.png","heartpulse":"1f497.png","heavy_heart_exclamation_mark_ornament":"2763-fe0f.png","hole":"1f573-fe0f.png","hot_face":"1f975.png","hugging_face":"1f917.png","hushed":"1f62f.png","imp":"1f47f.png","innocent":"1f607.png","japanese_goblin":"1f47a.png","japanese_ogre":"1f479.png","joy":"1f602.png","joy_cat":"1f639.png","kiss":"1f48b.png","kissing":"1f617.png","kissing_cat":"1f63d.png","kissing_closed_eyes":"1f61a.png","kissing_heart":"1f618.png","kissing_smiling_eyes":"1f619.png","laughing":"1f606.png","left_speech_bubble":"1f5e8-fe0f.png","love_letter":"1f48c.png","lying_face":"1f925.png","mask":"1f637.png","money_mouth_face":"1f911.png","nauseated_face":"1f922.png","nerd_face":"1f913.png","neutral_face":"1f610.png","no_mouth":"1f636.png","open_mouth":"1f62e.png","orange_heart":"1f9e1.png","partying_face":"1f973.png","pensive":"1f614.png","persevere":"1f623.png","pleading_face":"1f97a.png","pouting_cat":"1f63e.png","purple_heart":"1f49c.png","rage":"1f621.png","relaxed":"263a-fe0f.png","relieved":"1f60c.png","revolving_hearts":"1f49e.png","right_anger_bubble":"1f5ef-fe0f.png","robot_face":"1f916.png","rolling_on_the_floor_laughing":"1f923.png","scream":"1f631.png","scream_cat":"1f640.png","see_no_evil":"1f648.png","shushing_face":"1f92b.png","skull":"1f480.png","skull_and_crossbones":"2620-fe0f.png","sleeping":"1f634.png","sleepy":"1f62a.png","slightly_frowning_face":"1f641.png","slightly_smiling_face":"1f642.png","smile":"1f604.png","smile_cat":"1f638.png","smiley":"1f603.png","smiley_cat":"1f63a.png","smiling_face_with_3_hearts":"1f970.png","smiling_imp":"1f608.png","smirk":"1f60f.png","smirk_cat":"1f63c.png","sneezing_face":"1f927.png","sob":"1f62d.png","space_invader":"1f47e.png","sparkling_heart":"1f496.png","speak_no_evil":"1f64a.png","speech_balloon":"1f4ac.png","star-struck":"1f929.png","stuck_out_tongue":"1f61b.png","stuck_out_tongue_closed_eyes":"1f61d.png","stuck_out_tongue_winking_eye":"1f61c.png","sunglasses":"1f60e.png","sweat":"1f613.png","sweat_drops":"1f4a6.png","sweat_smile":"1f605.png","thinking_face":"1f914.png","thought_balloon":"1f4ad.png","tired_face":"1f62b.png","triumph":"1f624.png","two_hearts":"1f495.png","unamused":"1f612.png","upside_down_face":"1f643.png","weary":"1f629.png","white_frowning_face":"2639-fe0f.png","white_heart":"1f90d.png","wink":"1f609.png","woozy_face":"1f974.png","worried":"1f61f.png","yawning_face":"1f971.png","yellow_heart":"1f49b.png","yum":"1f60b.png","zany_face":"1f92a.png","zipper_mouth_face":"1f910.png","zzz":"1f4a4.png"},"enableQQ":false,"highlight":true,"lang":"zh-cn","pageSize":10,"placeholder":"你的评论 ...","recordIP":true,"visitor":true}},"lightGallery":{"actualSize":false,"exThumbImage":"data-thumbnail","hideBarsDelay":2000,"selector":".lightgallery","speed":400,"thumbContHeight":80,"thumbWidth":80,"thumbnail":true},"math":{"delimiters":[{"display":true,"left":"$$","right":"$$"},{"display":true,"left":"\\[","right":"\\]"},{"display":false,"left":"$","right":"$"},{"display":false,"left":"\\(","right":"\\)"}],"strict":false},"search":{"algoliaAppID":"VX4BXOJBC5","algoliaIndex":"majorbio.zh-cn","algoliaSearchKey":"53790f167edb548b217bfe91dd891ac0","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

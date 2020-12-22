@@ -1,0 +1,14 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>富集 - 标签 - 美吉生物信息实验室</title>
+        <link>http://mojorbioinfor.work/tags/%E5%AF%8C%E9%9B%86/</link>
+        <description>富集 - 标签 - 美吉生物信息实验室</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 16 Dec 2020 14:30:59 &#43;0800</lastBuildDate><atom:link href="http://mojorbioinfor.work/tags/%E5%AF%8C%E9%9B%86/" rel="self" type="application/rss+xml" /><item>
+    <title>富集分析</title>
+    <link>http://mojorbioinfor.work/posts/enrichment-analysis/</link>
+    <pubDate>Wed, 16 Dec 2020 14:30:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://mojorbioinfor.work/posts/enrichment-analysis/</guid>
+    <description><![CDATA[一. 目的： 对目标基因集进行功能富集分析。采用软件 Goatools 进行GO富集分析； 用python脚本进行KEGG PATHWAY 或其他数据库的富集分析 ，原理为超几何分布]]></description>
+</item></channel>
+</rss>

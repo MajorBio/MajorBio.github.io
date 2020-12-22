@@ -1,0 +1,49 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>RNAseq - 分类 - 美吉生物信息实验室</title>
+        <link>http://mojorbioinfor.work/categories/rnaseq/</link>
+        <description>RNAseq - 分类 - 美吉生物信息实验室</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Wed, 16 Dec 2020 14:30:59 &#43;0800</lastBuildDate><atom:link href="http://mojorbioinfor.work/categories/rnaseq/" rel="self" type="application/rss+xml" /><item>
+    <title>DESeq2差异分析</title>
+    <link>http://mojorbioinfor.work/posts/deseq2-differential-analysis-of-count-data/</link>
+    <pubDate>Wed, 16 Dec 2020 14:30:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://mojorbioinfor.work/posts/deseq2-differential-analysis-of-count-data/</guid>
+    <description><![CDATA[一. 目的： 使用DEseq2 对RNAseq的表达谱数据进行差异分析 二. 使用示例： 程序执行： 1 Rscript /mnt/ilustre/centos7users/daokuan.zhang/workspace/develop/diffExp/run_DESeq2.R -r miRNA.counts.txt -g group.txt -c compare.txt -e miRNA_tpm.xls -a miRNA.target.anno.txt 例子路径 1 2 3 4 5 6 7 8 9]]></description>
+</item><item>
+    <title>富集分析</title>
+    <link>http://mojorbioinfor.work/posts/enrichment-analysis/</link>
+    <pubDate>Wed, 16 Dec 2020 14:30:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://mojorbioinfor.work/posts/enrichment-analysis/</guid>
+    <description><![CDATA[一. 目的： 对目标基因集进行功能富集分析。采用软件 Goatools 进行GO富集分析； 用python脚本进行KEGG PATHWAY 或其他数据库的富集分析 ，原理为超几何分布]]></description>
+</item><item>
+    <title>Combat 进行批次矫正</title>
+    <link>http://mojorbioinfor.work/posts/batch-correction/</link>
+    <pubDate>Mon, 14 Dec 2020 16:29:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://mojorbioinfor.work/posts/batch-correction/</guid>
+    <description><![CDATA[一. 目的： 对存在批次的批次的表达谱按样本进行去批次矫正 二. 使用示例： 程序执行： ` 1 Rscript /mnt/ilustre/centos7users/daokuan.zhang/workspace/develop/batchEffect/Combat/Combat.R -e unigene.tpm.matrix.xls -p batch_info.txt -o ./ 例子路径 1 2 3 4 - 参数说明： -e 表达量矩阵文]]></description>
+</item><item>
+    <title>The Short Time-series Expression Miner</title>
+    <link>http://mojorbioinfor.work/posts/stem-sop/</link>
+    <pubDate>Mon, 14 Dec 2020 16:29:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://mojorbioinfor.work/posts/stem-sop/</guid>
+    <description><![CDATA[STEM: a tool for the analysis of short time series gene expression data STEM官方帮助文档 一. 数据准备 RNseq 表达矩阵文件:行为基因，列为样本 二. Pipeline 1 2 3 4 5 脚本位置： /mnt/ilustre/centos7users/daokuan.zhang/workspace/develop/STEM/STEM.py 用法示例： python /mnt/ilustre/centos7users/daokuan.zhang/workspace/develop/STEM/STEM.py matrix.txt 三.]]></description>
+</item><item>
+    <title>TWAS/eQTL analysis pipeline</title>
+    <link>http://mojorbioinfor.work/posts/matrix-eqtl-twas/</link>
+    <pubDate>Mon, 14 Dec 2020 16:29:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://mojorbioinfor.work/posts/matrix-eqtl-twas/</guid>
+    <description><![CDATA[eQTL 数据准备 物种的gff文件 vcf文件（已做完基因型填充） 1 $java -jar /mnt/ilustre/centos7users/xiaolong.he/bin/beagle/beagle.18May20.d20.jar gt=/mnt/ilustre/centos7users/xiaolong.he/others/GWAS_mengluo/KF/pop.uniq.vcf out=/mnt/ilustre/centos7users/xiaolong.he/others/GWAS_mengluo/KF/pop.phased&gt; 基因表达量矩阵（行为基因，列为样本） Pipeline 示例： 1 2 3 4 5 6 7 8 9 10 11 12 13 14]]></description>
+</item><item>
+    <title>根据比对率生产假的原始序列数据</title>
+    <link>http://mojorbioinfor.work/posts/mapping-make-fake-data/</link>
+    <pubDate>Mon, 14 Dec 2020 16:29:59 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>http://mojorbioinfor.work/posts/mapping-make-fake-data/</guid>
+    <description><![CDATA[Mapping 一. 数据准备 比对的到的bam文件：DMSO_1.bam 二. 使用说明 1 2 3 4 5 6 7 脚本路径： /mnt/ilustre/centos7users/xiaolong.he/develop/after_sales/mapping/scripts/pipeline.py 用法示例：nohup python ../scripts/pipeline.py -i data/ -o ./ -a 1 -e 7 -t 0.8 &amp;]]></description>
+</item></channel>
+</rss>
